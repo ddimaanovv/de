@@ -1,9 +1,6 @@
 html {
   scroll-behavior: smooth;
 }
-#root {
-  padding: 20px;
-}
 
 table {
   border-spacing: 0;
