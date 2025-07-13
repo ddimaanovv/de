@@ -15,6 +15,7 @@ const BASE =
 function App() {
   const [content, setContent] = useState("");
   const [menu, setMenu] = useState([]);
+  const [isSidebarOpen, setSidebarOpen] = useState(false);
 
   useEffect(() => {
     fetch(
@@ -28,37 +29,38 @@ function App() {
       });
   }, []);
 
+  const closeSidebar = () => setSidebarOpen(false);
+
   return (
     <div>
-      <Header />
+      <Header onMenuClick={() => setSidebarOpen((open) => !open)} />
+
+      {/* Оверлей — только на мобилках */}
       <div
-        style={{
-          display: "flex",
-          alignItems: "flex-start", // чтобы sidebar и main стартовали по верхней границе
-        }}
-      >
-        <Sidebar toc={menu} />
-        <main
-          style={{
-            flex: 1,
-            padding: "1rem",
-          }}
-        >
-          <Markdown
-            children={content}
-            remarkPlugins={[[remarkGfm]]}
-            rehypePlugins={[rehypeRaw, rehypeSlug]}
-            remarkRehypeOptions={{ passThrough: ["link"] }}
-            components={{
-              img: ({ src, alt, ...props }) => {
-                let url = src;
-                if (src && !/^(https?:\/\/|data:)/.test(src)) {
-                  url = new URL(src, BASE).toString();
-                }
-                return <img src={url} alt={alt} {...props} />;
-              },
-            }}
-          ></Markdown>
+        className={`overlay ${isSidebarOpen ? "" : "hidden"}`}
+        onClick={closeSidebar}
+      />
+
+      <div style={{ display: "flex", alignItems: "flex-start" }}>
+        <Sidebar toc={menu} isOpen={isSidebarOpen} onLinkClick={closeSidebar} />
+        <main style={{ flex: 1, padding: "1rem" }}>
+          <div className="markdown-container">
+            <Markdown
+              children={content}
+              remarkPlugins={[[remarkGfm]]}
+              rehypePlugins={[rehypeRaw, rehypeSlug]}
+              remarkRehypeOptions={{ passThrough: ["link"] }}
+              components={{
+                img: ({ src, alt, ...props }) => {
+                  let url = src;
+                  if (src && !/^(https?:\/\/|data:)/.test(src)) {
+                    url = new URL(src, BASE).toString();
+                  }
+                  return <img src={url} alt={alt} {...props} />;
+                },
+              }}
+            ></Markdown>
+          </div>
         </main>
       </div>
       <Footer />

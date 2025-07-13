@@ -1,5 +1,92 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
 html {
   scroll-behavior: smooth;
+}
+
+/* Общие стили для Sidebar */
+.sidebar {
+  width: 250px;
+  padding: 1rem;
+  padding-bottom: 150px;
+  border-right: 1px solid #ddd;
+  background: #fafafa;
+  color: "#333";
+  text-decoration: "none";
+  /* Sticky только на десктопе: */
+  position: sticky;
+  top: 0;
+  align-self: flex-start;
+  height: fit-content;
+}
+
+.sidebar a {
+  color: #333;
+}
+.sidebar a:hover {
+  color: #646cff;
+}
+
+/* Скрываем «гамбургер» на десктопе */
+.menu-button {
+  display: none;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+/* Оверлей по умолчанию не виден */
+.overlay {
+  display: none;
+}
+
+/* Мобильная версия */
+@media (max-width: 768px) {
+  /* Показываем кнопку меню */
+  .menu-button {
+    display: block;
+    position: fixed;
+    right: 1rem;
+    z-index: 1001;
+    background-color: #00b8ff75;
+  }
+
+  /* Sidebar превращается в выезжающую панель */
+  .sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    /* по умолчанию прячем за левую границу */
+    transform: translateX(-100%);
+    transition: transform 0.3s ease;
+    z-index: 1002;
+    height: 100vh;
+    overflow-y: auto;
+  }
+  /* Когда меню открыто — сдвигаем на место */
+  .sidebar.open {
+    transform: translateX(0);
+  }
+
+  /* Появляется полупрозрачный фон под меню */
+  .overlay {
+    display: block;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.3);
+    z-index: 1000;
+  }
+  .overlay.hidden {
+    display: none;
+  }
 }
 
 table {
@@ -23,4 +110,84 @@ tr {
   border-style: solid;
   border-width: 1px;
   padding: 0.5rem;
+}
+
+/* разрешаем перенос очень длинных слов/URL/строк */
+.markdown-container,
+.markdown-container * {
+  overflow-wrap: anywhere; /* современный стандарт */
+}
+
+.markdown-container > * {
+  margin: 20px 0px; /* ваш отступ */
+}
+
+/* ========== 2. Ограничиваем ширину медиа-элементов ==========
+   изображения, видео, iframe и пр. */
+.markdown-container img,
+.markdown-container video,
+.markdown-container iframe,
+.markdown-container embed,
+.markdown-container object {
+  max-width: 100%;
+  height: auto;
+  display: block; /* чтобы убрать возможные пробелы */
+  margin: 0 auto; /* по центру, опционально */
+}
+
+/* ========== 3. Блоки кода и таблицы ==========
+   Разрешаем перенос строк и подгоняем ширину */
+.markdown-container pre,
+.markdown-container code {
+  white-space: pre-wrap; /* перенос для очень длинных строк кода */
+  word-break: break-word; /* перенос очень длинных «слов» */
+  max-width: 100%;
+  overflow-x: auto; /* если нужно — можно всё же скроллить */
+}
+
+/* Вообще, часто делают отдельный прокручиваемый слой у <pre>: */
+/*
+.markdown-container pre {
+  background: #2d2d2d;
+  color: #f8f8f2;
+  padding: 1em;
+  overflow-x: auto;
+}
+*/
+
+/* Таблицы */
+.markdown-container table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: auto; /* авто-расчёт ширины колонок */
+}
+.markdown-container th,
+.markdown-container td {
+  padding: 0.5em;
+  border: 1px solid #ddd;
+}
+
+/* ========== 4. Блокцитаты и списки ==========
+   Обычно не ломают ширину, но на всякий случай: */
+.markdown-container blockquote {
+  margin: 0 1em;
+  padding-left: 1em;
+  border-left: 4px solid #ccc;
+}
+.markdown-container ul,
+.markdown-container ol {
+  padding-left: 1.5em;
+}
+
+/* ========== 5. Общий контейнер для Markdown ==========
+   В React-компоненте оборачиваем ReactMarkdown в div с этим классом */
+.markdown-container {
+  margin: 0 auto;
+  padding: 1rem;
+
+  /* Опционально: ограничить максимальную ширину во взрослой версии */
+  max-width: 800px;
+
+  /* разрешаем контенту растягиваться под экран телефона */
+  width: 100%;
 }
